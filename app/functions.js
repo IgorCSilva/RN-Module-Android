@@ -16,6 +16,8 @@ import {
   ScrollView
 } from 'react-native';
 
+import Battery from 'react-native-device-battery'
+
 // Módulo contendo métodos relacionados a toasts.
 var ModuleAndroid = NativeModules.ToastModule;
 
@@ -139,7 +141,7 @@ var ModuleAndroid = NativeModules.ToastModule;
    */
   module.exports.callback = () => {
 
-    ModuleAndroid.callback((msg) => this.customNotification(33, "Callback", msg));
+    ModuleAndroid.callback((msg) => {alert(msg)});
   }
   
   /**
@@ -202,6 +204,28 @@ var ModuleAndroid = NativeModules.ToastModule;
     //alert(command);
 
     ModuleAndroid.sqlDatabase(command, id, name, surname, marks);
+  }
+
+  /**
+   * Exibe o browser na página do site escolhido.
+   */
+  module.exports.getBatteryLevel = () => {
+
+    Battery.getBatteryLevel().then(level => {
+      alert(level)
+    })
+    //ModuleAndroid.sqlDatabase(command, id, name, surname, marks);
+  }
+  
+  /**
+   * Exibe o browser na página do site escolhido.
+   */
+  module.exports.isCharging = () => {
+
+    Battery.isCharging().then(isCharging => {
+      alert(isCharging)
+    })
+    //ModuleAndroid.sqlDatabase(command, id, name, surname, marks);
   }
 
 

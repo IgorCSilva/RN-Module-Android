@@ -1,3 +1,5 @@
 rootProject.name = 'and'
 
 include ':app'
+include ':react-native-device-battery'
+project(':react-native-device-battery').projectDir = new File(settingsDir, '../node_modules/react-native-device-battery/android')

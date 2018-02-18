@@ -18,9 +18,19 @@ import {
 } from 'react-native';
 
 import func from './functions';
+import Battery from 'react-native-device-battery'
 
 // Módulo contendo métodos relacionados a toasts.
 var ModuleAndroid = NativeModules.ToastModule;
+
+// as a listener
+var onBatteryStateChanged = (state) => {
+  
+  if(state.level < 0.99 && !state.charging){
+    alert(JSON.stringify(state)) // {level: 0.95, charging: true}
+  }
+  
+};
 
 export default class app extends Component {
 
@@ -38,11 +48,30 @@ export default class app extends Component {
       dataBaseSurname:'',
       dataBaseMarks: ''      
     };
+
+    this.key = 0
+  }
+
+  componentDidMount(){
+    //alert('DidMount')
+
+    // to attach a listener
+    Battery.addListener(onBatteryStateChanged)
+  }
+
+  componentWillUnmount(){
+    //alert('DidMount')
+
+    // to attach a listener
+    Battery.removeListener(onBatteryStateChanged)
   }
 
   inputs(inputs){
 
     var list_inputs = inputs.map(function(data){
+    
+      // Incrementando key dos blocos.
+      //this.key++
     
       return(
         <TextInput
@@ -104,6 +133,8 @@ export default class app extends Component {
       entradas = this.inputs(inputs);
     }
 
+    
+
     return(
       <View style={{width: '100%', marginTop: 10}}>
           <Text style={{alignSelf: 'center', fontSize: 20, marginVertical: 5, borderBottomWidth: 1}}>
@@ -127,6 +158,7 @@ export default class app extends Component {
   render() {
 
     var that = this;
+    var key = 0
     return (
       <View style={styles.container}>
         <ScrollView>
@@ -134,7 +166,7 @@ export default class app extends Component {
           "Toasts ",
           [
             {
-              key: 1,
+              key: key++,
               placeholder: 'Texto',
               onChange: (text) => this.setState({toastText: text}),
               value: this.state.toastText
@@ -158,7 +190,7 @@ export default class app extends Component {
           "Intents",
           [
             {
-              key: 2,
+              key: key++,
               placeholder: 'Digite um site ou rua',
               onChange: (text) => this.setState({intentText: text}),
               value: this.state.intentText
@@ -397,25 +429,25 @@ export default class app extends Component {
           [
             
             {
-              key: 110,
+              key: key++,
               placeholder: 'Id',
               onChange: (text) => this.setState({dataBaseId: text}),
               value: this.state.dataBaseId
             },
             {
-              key: 111,
+              key: key++,
               placeholder: 'Nome',
               onChange: (text) => this.setState({dataBaseName: text}),
               value: this.state.dataBaseName
             },
             {
-              key: 112,
+              key: key++,
               placeholder: 'Sobrenome',
               onChange: (text) => this.setState({dataBaseSurname: text}),
               value: this.state.dataBaseSurname
             },
             {
-              key: 113,
+              key: key++,
               placeholder: 'Marks',
               onChange: (text) => this.setState({dataBaseMarks: text}),
               value: this.state.dataBaseMarks
@@ -440,6 +472,26 @@ export default class app extends Component {
               text: "Apagar",
               func: () => func.sqlDatabase("delete", this.state.dataBaseId, this.state.dataBaseName, this.state.dataBaseSurname, this.state.dataBaseMarks)                 
             }
+          ]
+          )}
+
+          {/*Gerenciando Bateria*/}
+          {this.newBlock(
+          "Bateria",
+          [
+                   
+          ],
+
+          
+          [
+            {
+              text: "Nível Bat.",
+              func: () => func.getBatteryLevel()   
+            },
+            {
+              text: "Carregando",
+              func: () => func.isCharging()                 
+            },
           ]
           )}
 
